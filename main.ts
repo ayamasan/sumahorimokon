@@ -53,9 +53,11 @@ function モード設定 (数値: number) {
 }
 bluetooth.onBluetoothConnected(function () {
     basic.showIcon(IconNames.Yes)
+    接続中 = 1
 })
 bluetooth.onBluetoothDisconnected(function () {
     basic.showIcon(IconNames.No)
+    接続中 = 0
 })
 input.onButtonPressed(Button.A, function () {
     if (受信管理 == 2) {
@@ -175,7 +177,11 @@ input.onButtonPressed(Button.B, function () {
         }
         basic.pause(パルス間空き時間)
     }
-    basic.clearScreen()
+    if (接続中 != 0) {
+        basic.showIcon(IconNames.Yes)
+    } else {
+        basic.clearScreen()
+    }
 })
 function 送信データ作成 () {
     送信データ = []
@@ -257,7 +263,9 @@ let IRデータ: string[] = []
 let 値 = 0
 let LEDオフ = 0
 let LEDオン = 0
+let 接続中 = 0
 basic.showIcon(IconNames.Square)
+接続中 = 0
 LEDオン = 1
 LEDオフ = 0
 値 = 0
