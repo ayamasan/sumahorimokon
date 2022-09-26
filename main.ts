@@ -1,3 +1,82 @@
+function IR送信 () {
+    basic.showArrow(ArrowNames.North)
+    送信データ作成()
+    for (let index = 0; index < パルスくり返し回数; index++) {
+        for (let index = 0; index < ヘッダー1長; index++) {
+            pins.digitalWritePin(DigitalPin.P14, LEDオン)
+            for (let index = 0; index < 周波数1長; index++) {
+                値 = pins.digitalReadPin(DigitalPin.P0)
+            }
+            pins.digitalWritePin(DigitalPin.P14, LEDオフ)
+            for (let index = 0; index < 周波数2長; index++) {
+                値 = pins.digitalReadPin(DigitalPin.P0)
+            }
+        }
+        for (let index = 0; index < ヘッダー2長; index++) {
+            pins.digitalWritePin(DigitalPin.P14, 0)
+            for (let index = 0; index < 周波数1長; index++) {
+                値 = pins.digitalReadPin(DigitalPin.P0)
+            }
+            pins.digitalWritePin(DigitalPin.P14, 0)
+            for (let index = 0; index < 周波数2長; index++) {
+                値 = pins.digitalReadPin(DigitalPin.P0)
+            }
+        }
+        if (IRモード <= 2) {
+            for (let カウンター2 = 0; カウンター2 <= IRデータ数; カウンター2++) {
+                for (let index = 0; index < _1T; index++) {
+                    pins.digitalWritePin(DigitalPin.P14, LEDオン)
+                    for (let index = 0; index < 周波数1長; index++) {
+                        値 = pins.digitalReadPin(DigitalPin.P0)
+                    }
+                    pins.digitalWritePin(DigitalPin.P14, LEDオフ)
+                    for (let index = 0; index < 周波数2長; index++) {
+                        値 = pins.digitalReadPin(DigitalPin.P0)
+                    }
+                }
+                for (let index = 0; index < 送信データ[カウンター2]; index++) {
+                    pins.digitalWritePin(DigitalPin.P14, 0)
+                    for (let index = 0; index < 周波数1長; index++) {
+                        値 = pins.digitalReadPin(DigitalPin.P0)
+                    }
+                    pins.digitalWritePin(DigitalPin.P14, 0)
+                    for (let index = 0; index < 周波数2長; index++) {
+                        値 = pins.digitalReadPin(DigitalPin.P0)
+                    }
+                }
+            }
+        } else {
+            for (let カウンター3 = 0; カウンター3 <= IRデータ数; カウンター3++) {
+                for (let index = 0; index < 送信データ[カウンター3]; index++) {
+                    pins.digitalWritePin(DigitalPin.P14, LEDオン)
+                    for (let index = 0; index < 周波数1長; index++) {
+                        値 = pins.digitalReadPin(DigitalPin.P0)
+                    }
+                    pins.digitalWritePin(DigitalPin.P14, LEDオフ)
+                    for (let index = 0; index < 周波数2長; index++) {
+                        値 = pins.digitalReadPin(DigitalPin.P0)
+                    }
+                }
+                for (let index = 0; index < _1T; index++) {
+                    pins.digitalWritePin(DigitalPin.P14, 0)
+                    for (let index = 0; index < 周波数1長; index++) {
+                        値 = pins.digitalReadPin(DigitalPin.P0)
+                    }
+                    pins.digitalWritePin(DigitalPin.P14, 0)
+                    for (let index = 0; index < 周波数2長; index++) {
+                        値 = pins.digitalReadPin(DigitalPin.P0)
+                    }
+                }
+            }
+        }
+        basic.pause(パルス間空き時間)
+    }
+    if (接続中 != 0) {
+        basic.showIcon(IconNames.Yes)
+    } else {
+        basic.clearScreen()
+    }
+}
 pins.onPulsed(DigitalPin.P0, PulseValue.High, function () {
     if (受信管理 == 1) {
         パルス幅データ.push(pins.pulseDuration())
@@ -83,10 +162,15 @@ bluetooth.onUartDataReceived(serial.delimiters(Delimiters.Fullstop), function ()
         モード設定(IRモード)
         basic.showIcon(IconNames.Happy)
         basic.clearScreen()
+        IR送信()
+    } else if (受信データ == "IRRCV") {
         control.raiseEvent(
-        EventBusSource.MICROBIT_ID_BUTTON_B,
+        EventBusSource.MICROBIT_ID_BUTTON_A,
         EventBusValue.MICROBIT_BUTTON_EVT_CLICK
         )
+    } else if (受信データ == "TOUT") {
+        basic.clearScreen()
+        受信管理 = 2
     }
 })
 pins.onPulsed(DigitalPin.P0, PulseValue.Low, function () {
@@ -105,83 +189,7 @@ pins.onPulsed(DigitalPin.P0, PulseValue.Low, function () {
     }
 })
 input.onButtonPressed(Button.B, function () {
-    basic.showArrow(ArrowNames.North)
-    送信データ作成()
-    for (let index = 0; index < パルスくり返し回数; index++) {
-        for (let index = 0; index < ヘッダー1長; index++) {
-            pins.digitalWritePin(DigitalPin.P14, LEDオン)
-            for (let index = 0; index < 周波数1長; index++) {
-                値 = pins.digitalReadPin(DigitalPin.P0)
-            }
-            pins.digitalWritePin(DigitalPin.P14, LEDオフ)
-            for (let index = 0; index < 周波数2長; index++) {
-                値 = pins.digitalReadPin(DigitalPin.P0)
-            }
-        }
-        for (let index = 0; index < ヘッダー2長; index++) {
-            pins.digitalWritePin(DigitalPin.P14, 0)
-            for (let index = 0; index < 周波数1長; index++) {
-                値 = pins.digitalReadPin(DigitalPin.P0)
-            }
-            pins.digitalWritePin(DigitalPin.P14, 0)
-            for (let index = 0; index < 周波数2長; index++) {
-                値 = pins.digitalReadPin(DigitalPin.P0)
-            }
-        }
-        if (IRモード <= 2) {
-            for (let カウンター2 = 0; カウンター2 <= IRデータ数; カウンター2++) {
-                for (let index = 0; index < _1T; index++) {
-                    pins.digitalWritePin(DigitalPin.P14, LEDオン)
-                    for (let index = 0; index < 周波数1長; index++) {
-                        値 = pins.digitalReadPin(DigitalPin.P0)
-                    }
-                    pins.digitalWritePin(DigitalPin.P14, LEDオフ)
-                    for (let index = 0; index < 周波数2長; index++) {
-                        値 = pins.digitalReadPin(DigitalPin.P0)
-                    }
-                }
-                for (let index = 0; index < 送信データ[カウンター2]; index++) {
-                    pins.digitalWritePin(DigitalPin.P14, 0)
-                    for (let index = 0; index < 周波数1長; index++) {
-                        値 = pins.digitalReadPin(DigitalPin.P0)
-                    }
-                    pins.digitalWritePin(DigitalPin.P14, 0)
-                    for (let index = 0; index < 周波数2長; index++) {
-                        値 = pins.digitalReadPin(DigitalPin.P0)
-                    }
-                }
-            }
-        } else {
-            for (let カウンター3 = 0; カウンター3 <= IRデータ数; カウンター3++) {
-                for (let index = 0; index < 送信データ[カウンター3]; index++) {
-                    pins.digitalWritePin(DigitalPin.P14, LEDオン)
-                    for (let index = 0; index < 周波数1長; index++) {
-                        値 = pins.digitalReadPin(DigitalPin.P0)
-                    }
-                    pins.digitalWritePin(DigitalPin.P14, LEDオフ)
-                    for (let index = 0; index < 周波数2長; index++) {
-                        値 = pins.digitalReadPin(DigitalPin.P0)
-                    }
-                }
-                for (let index = 0; index < _1T; index++) {
-                    pins.digitalWritePin(DigitalPin.P14, 0)
-                    for (let index = 0; index < 周波数1長; index++) {
-                        値 = pins.digitalReadPin(DigitalPin.P0)
-                    }
-                    pins.digitalWritePin(DigitalPin.P14, 0)
-                    for (let index = 0; index < 周波数2長; index++) {
-                        値 = pins.digitalReadPin(DigitalPin.P0)
-                    }
-                }
-            }
-        }
-        basic.pause(パルス間空き時間)
-    }
-    if (接続中 != 0) {
-        basic.showIcon(IconNames.Yes)
-    } else {
-        basic.clearScreen()
-    }
+    IR送信()
 })
 function 送信データ作成 () {
     送信データ = []
@@ -245,12 +253,12 @@ function 送信データ作成 () {
     }
 }
 let 受信データ = ""
-let 周波数1長 = 0
 let _3T = 0
 let _1T = 0
 let ヘッダー2長 = 0
-let ヘッダー1長 = 0
 let 周波数2長 = 0
+let 周波数1長 = 0
+let ヘッダー1長 = 0
 let 最後の受信時間 = 0
 let 受信管理 = 0
 let パルス幅データ: number[] = []
