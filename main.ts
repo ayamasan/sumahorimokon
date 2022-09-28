@@ -273,6 +273,7 @@ let LEDオフ = 0
 let LEDオン = 0
 let 接続中 = 0
 basic.showIcon(IconNames.Square)
+bluetooth.startUartService()
 接続中 = 0
 LEDオン = 1
 LEDオフ = 0
