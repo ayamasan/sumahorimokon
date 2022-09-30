@@ -109,12 +109,14 @@ function BT送信 () {
 // ループ回数12＝28us、36KH
 function モード設定 (数値: number) {
     if (数値 == 1) {
+        周波数1長 = 5
         周波数2長 = 7
         ヘッダー1長 = 270
         ヘッダー2長 = 129
         _1T = 15
         _3T = 46
     } else if (数値 == 2) {
+        周波数1長 = 5
         周波数2長 = 7
         ヘッダー1長 = 135
         ヘッダー2長 = 65
@@ -187,9 +189,6 @@ pins.onPulsed(DigitalPin.P0, PulseValue.Low, function () {
         }
         最後の受信時間 = control.millis()
     }
-})
-input.onButtonPressed(Button.B, function () {
-    IR送信()
 })
 function 送信データ作成 () {
     送信データ = []
@@ -290,6 +289,11 @@ let IR入力 = pins.digitalReadPin(DigitalPin.P0)
 パルス幅データ = []
 受信管理 = 2
 最後の受信時間 = control.millis()
+loops.everyInterval(1000, function () {
+    if (接続中 == 1) {
+        bluetooth.uartWriteString(".")
+    }
+})
 basic.forever(function () {
     if (受信管理 == 1) {
         if (control.millis() - 最後の受信時間 > 45) {
